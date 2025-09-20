@@ -1,7 +1,8 @@
 
 local List = {
     'md-metaldetecting',
-    'md-stashes'
+    'md-stashes',
+    'solaire-approval',
 }
 
 return List

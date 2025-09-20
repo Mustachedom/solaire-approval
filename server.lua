@@ -9,17 +9,12 @@ local function runChecks()
     end
 
     PerformHttpRequest("https://raw.githubusercontent.com/Mustachedom/solaire-approval/refs/heads/main/list.lua", function(status,text,err)
-        local chunk, loadErr = load(text)
+        local chunk = load(text)
         if chunk then
             local success, result = pcall(chunk)
             if success and type(result) == "table" then
                 approvedList = result
-                print("^2Successfully loaded approved resource list.^0")
-            else
-                print("^1ERROR: Failed to execute Lua chunk: " .. tostring(result) .. "^0")
             end
-        else
-            print("^1ERROR: Failed to load Lua chunk: " .. tostring(loadErr) .. "^0")
         end
     end)
 
@@ -27,8 +22,16 @@ local function runChecks()
         Wait(10)
     until #approvedList > 0
 
+    local function tableContains(tbl, val)
+        for _, v in ipairs(tbl) do
+            if v == val then
+                return true
+            end
+        end
+        return false
+    end
     for _, resourceName in ipairs(resourceList) do
-        if ps.tableContains(approvedList, resourceName) then
+        if tableContains(approvedList, resourceName) then
             print('^2 RESOURCE ' .. resourceName .. ' HAS SOLAIRES SEAL OF APPROVAL ^0')
         else
             print('^1 RESOURCE ' .. resourceName .. ' DOES NOT HAVE SOLAIRES SEAL OF APPROVAL ^0')
@@ -36,5 +39,5 @@ local function runChecks()
     end
 end
 
-Wait(1000 * 60 * 0.2)
+Wait(1000 * 60 * 4)
 runChecks()
